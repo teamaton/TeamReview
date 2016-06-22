@@ -19,6 +19,21 @@ Components used:
 
 We use sass for css compiling, bootstrap for css and javascript components, jquery.
 
+## Get Started
+
+1 Adjust settings in Web.config for smtp-server:
+    <mailSettings>
+     <smtp>
+       <network defaultCredentials="false" host="my-mail.my-server.com" password="password" port="465" enableSsl="true" userName="me@me.com" />
+     </smtp>
+   </mailSettings>
+
+1 Set default email for automatic messages and as sender:
+DefaultContactEmail in EmailService (TeamReview.Core/Services/EmailService.cs)
+
+1 to run the specs, fill in email credentials:
+Given I own a google account (in TeamReview.Specs/Steps.cs)
+
 ## Copyright & License
 
 Copyright (c) 2013-2016 teamaton UG - Released under the [MIT license](LICENSE).
