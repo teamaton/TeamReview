@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Register";
+}
+
+@if (TempData["Message"] != null) {
+    <div class="zone-messages">
+        <p class="message message-Warning">@TempData["Message"]</p>
+    </div>
+}
+<h1>Get Going with TeamReview</h1>
+<div class="box1of2">
+    <h2>@ViewBag.Title</h2>
+    <div class="block-top">
+        <h3>Create new account</h3>
+        @using (Html.BeginForm()) {
+            @Html.AntiForgeryToken()
+            <fieldset>                            
+                @Html.TextBox("emailAddress", null, new { @class = "rg11", placeholder = "Please Enter Your Email", type = "email" })
+                <input type="submit" id="Register" value="Register" class="rg12" />
+            </fieldset>
+        }
+    </div>
+    
+</div>
+<div class="box1of2">
+    <h2>Login</h2>
+    <div class="block-top">
+        <h3>Sign into existing account</h3>
+        @using (Html.BeginForm("Login", "Account"))
+        {
+            @Html.AntiForgeryToken()
+            <fieldset>                            
+            @Html.TextBox("emailAddress", null, new { @class = "rg11", placeholder = "Your Email", type = "email" })
+            @Html.TextBox("Password", null, new { @class = "rg11", placeholder = "Password", type = "password" })
+            <input type="submit" id="Login" value="Login" class="rg12" />
+            </fieldset>
+        }
+        
+    </div>
+</div>
+<div class="box1of1">
+    <h2>Or Use one of the following services to register or login:</h2>
+    @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
+</div>

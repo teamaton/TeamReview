@@ -1,0 +1,13 @@
+﻿@using TeamReview.Web.ViewModels
+@model CategoryAddModel
+
+<tr>
+    <td>
+        @Html.TextBoxFor(model => model.Name, new { placeholder = "category name", autofocus = "" })
+        @Html.ValidationMessageFor(model => model.Name)
+    </td>
+    <td>
+        @Html.TextAreaFor(model => model.Description, new { row = "1", @class = "cr75", placeholder = "category description" })
+        @Html.ValidationMessageFor(model => model.Description)
+    </td>
+</tr>

@@ -1,0 +1,53 @@
+﻿@using TeamReview.Web.ViewModels
+@model ContactViewModel
+@{
+    ViewBag.Title = "Contact Us | Team Review";
+    var showMessage = TempData["MessageSent"] == "true";
+}
+<div class="content-s">
+    <h1>Drop Us a Line</h1>
+    @if (showMessage) {
+        <p class="block-top info">Thank you, your message has been sent. We will respond as
+            quickly as possible.</p>
+    }
+    else {
+        using (Html.BeginForm("Contact", "Home", FormMethod.Post, new { @class = "form-horizontal block-top form-special" })) {
+            <p class="info">Hi, how can we help you?</p>
+            <div class="control-group">
+                @Html.LabelFor(m => m.EmailAddress, "Your Email *", new { @class = "control-label" })
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.EmailAddress, new { type = "email" })
+                    @Html.ValidationMessageFor(m => m.EmailAddress)
+                </div>
+            </div>
+            <div class="control-group">
+                @Html.LabelFor(m => m.FirstName, "First Name", new { @class = "control-label" })
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.FirstName)
+                </div>
+            </div>
+            <div class="control-group">
+                @Html.LabelFor(m => m.LastName, "Last Name", new { @class = "control-label" })
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.LastName)
+                </div>
+            </div>
+            <div class="control-group">
+                @Html.LabelFor(m => m.Message, "Your Message *", new { @class = "control-label" })
+                <div class="controls">
+                    @Html.TextAreaFor(m => m.Message, new { @class = "input-xxlarge" })
+                    @Html.ValidationMessageFor(m => m.Message)
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-success">Send Message</button>
+                </div>
+            </div>
+        }
+    }
+</div>
+<div class="sidebar">
+    <p><a class="btn10" href="@Url.Action("Create", "Review")"><i class="db12"></i>Create
+           Free Review</a></p>
+</div>

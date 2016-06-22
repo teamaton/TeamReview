@@ -1,0 +1,51 @@
+﻿@using TeamReview.Web.ViewModels
+@model IEnumerable<ReviewViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+@if (TempData["Message"] != null) {
+    <div class="zone-messages">
+        <p class="message message-Warning">@TempData["Message"]</p>
+    </div>
+}
+<h1 class="db10">My TeamReview Dashboard</h1>
+<a class="db11" href="@Url.Action("Create", "Review")"><i class="db12"></i>Create Review</a>
+<h2 class="db13">Your Reviews</h2>
+<div class="block-top">
+    @if (!Model.Any()) {
+        <p class="info">You have not created any review, yet. Go ahead, <a href="@Url.Action("Create", "Review")">create your first review</a>!</p>
+    }
+    <table class="table table2">
+        @foreach (var item in Model) {
+            var rowId = "Id_" + item.ReviewId;
+            <tr id="@rowId">
+                <td class="db25">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @switch (item.ActionStatus) {
+                        case ActionStatus.NotStarted:
+                            using (Html.BeginForm("StartReview", "Review")) {
+                                @Html.Hidden("id", item.ReviewId)
+                                <button type="submit" name="start-review" class="db31">Start review</button>
+                            }
+                            break;
+                        case ActionStatus.ProvideReview:
+                            @Html.ActionLink("Provide review", "Provide", "Feedback", new { id = item.ReviewId }, new { @class = "db32" })
+                            break;
+                        case ActionStatus.WaitForReviews:
+                            <p>Waiting for reviews</p>
+                            @Html.ActionLink("Show report", "Index", new { controller = "Report", id = item.ReviewId })
+                            break;
+                        case ActionStatus.ShowResults:
+                            @Html.ActionLink("Show report", "Index", new { controller = "Report", id = item.ReviewId })
+                            break;
+                    }
+                    @Html.ActionLink("Edit review", "Edit", new { id = item.ReviewId }, new { @class = "db33" })
+                    @* | @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })*@
+                </td>
+            </tr>
+        }
+    </table>
+</div>

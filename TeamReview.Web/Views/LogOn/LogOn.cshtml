@@ -1,0 +1,6 @@
+<h2>Please log in:</h2>
+@using (Html.BeginForm("LogOn", "LogOn")) {
+    @Html.Hidden("loginIdentifier", "https://www.google.com/accounts/o8/id")
+    <button>Register using Google</button>
+    @Html.ValidationSummary()
+}

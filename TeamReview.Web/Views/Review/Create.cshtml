@@ -1,0 +1,192 @@
+﻿@using TeamReview.Web.ViewModels
+@model ReviewCreateEditModel
+
+@{
+    // we can assume that the review name is always empty when calling Create
+    // and never empty when calling Edit
+    var isCreate = string.IsNullOrEmpty(Model.Name);
+    ViewBag.Title = isCreate ? "Create review" : "Edit review: " + Model.Name + "";
+}
+
+@if (TempData["Message"] != null) {
+    <div class="zone-messages">
+        <p class="message message-Warning">@TempData["Message"]</p>
+    </div>
+}
+
+@using (Html.BeginForm()) {
+    <fieldset class="">
+
+        <h1 class="cr25" title="Click to edit inline">
+            <span class="cr26">
+                @(isCreate ? "Untitled Review" : Model.Name)
+            </span>
+            <i class="cr21"></i>
+        </h1>
+        @Html.HiddenFor(model => model.Name, new { @class = "jq-name" })
+        @Html.ValidationMessageFor(model => model.Name)
+        
+        <div>
+            @Html.LabelFor(model => model.LengthOfReviewRoundInWeeks)
+            @Html.EditorFor(model => model.LengthOfReviewRoundInWeeks)
+            @Html.ValidationMessageFor(model => model.LengthOfReviewRoundInWeeks)
+        </div>
+        <div id="categories">
+            <h2 class="cr40">Categories</h2>
+            <button class="cr41" type="submit" name="submit.add" value="addCategory" id="addCategory" title="Add Category">
+                +
+            </button>
+
+            <table class="cr2">
+                <colgroup>
+                    <col width="250" />
+                    <col width="650" />
+                    <col width="100" />
+                </colgroup>
+                <tbody>
+                    @if (Model.NoCategoriesAddedYet) {
+                        <tr class="cr410">
+                            <td colspan="3">
+                                <p>You have not yet created any categories. Go ahead and
+                                    <button class="link cr61" type="submit" name="submit.add" value="addCategory">add your
+                                        first category</button>.</p>
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var cat in Model.ExistingCategories) {
+                        <tr>
+                            <td class="cr22">@cat.Name</td>
+                            <td><blockquote class="cr23"><p class="q-text">@cat.Description</p></blockquote></td>
+                            <td><button class="cr31" title="remove this category" type="button" name="remove-category" data-id="@(Model.Id)" data-review-id="@(Model.Id)" data-category-id="@(cat.Id)" data-category-name="@(cat.Name)">x</button></td>
+                        </tr>
+                    }
+                    @for (var i = 0; i < Model.AddedCategories.Count; i++) {
+                        Html.RenderPartial("AddCategory", Model.AddedCategories[i],
+                                           new ViewDataDictionary(ViewData)
+                                               {
+                                                   TemplateInfo = new TemplateInfo { HtmlFieldPrefix = "AddedCategories[" + i + "]" }
+                                               });
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div id="peers">
+            <h2 class="cr40">Peers</h2>
+            <button class="cr43" type="submit" name="submit.add" value="addPeer" id="addPeer" title="Invite Peers and Team Members">
+                +
+            </button>
+
+            <table class="cr2">
+                <colgroup>
+                    <col width="250" />
+                    <col width="550" />
+                    <col width="200" />
+                </colgroup>
+                <tbody>
+                    @if (Model.NoPeersInvitedYet) {
+                        <tr>
+                            <td colspan="3">
+                                <p class="cr410">You have not yet invited any peers for your review. </p>
+                                <p class="cr410">In order to give and get feedback you can invite your colleagues, team members, project members...</p>
+                                <p class="cr410">Go ahead and <button class="cr61 link" type="submit" name="submit.add" value="addPeer">invite some peers</button>.</p>
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var peer in Model.ExistingPeers) {
+                        var thisIsYou = peer.EmailAddress == User.Identity.Name;
+                        <tr>
+                            <td class="cr22">@peer.UserName <span class="cr221">@(thisIsYou ? "(this is me)" : "")</span></td>
+                            <td class="cr24">@peer.EmailAddress</td>
+                            <td>
+                                @if (!thisIsYou) {
+                                    <button type="button" class="cr31" title="remove peer" name="remove-peer" data-id="@(Model.Id)" data-review-id="@(Model.Id)" data-peer-email="@(peer.EmailAddress)" data-peer-user-name="@(peer.UserName)">x</button>
+                                }
+                                else {
+                                    <span class="info">(you cannot remove yourself)</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    @for (var i = 0; i < Model.AddedPeers.Count; i++) {
+                        Html.RenderPartial("AddPeer", Model.AddedPeers[i],
+                                           new ViewDataDictionary(ViewData)
+                                               {
+                                                   TemplateInfo = new TemplateInfo { HtmlFieldPrefix = "AddedPeers[" + i + "]" }
+                                               });
+                    }
+                </tbody>
+            </table>
+        </div>
+        <p class="cr71">
+            @if (Model.Active) {
+                <input id="Save" type="submit" name="submit" value="Save changes" class="cr52" title="The review was already started - the changes will be directly available in the current review round." />    
+            }
+            else {
+                <input type="submit" name="submit" value="Save and Start the Review" class="cr51" title="Once you start the review, all your peers will receive an email inviting them to take part in the review. You can start the review at any time."/>
+                <input id="Save" type="submit" name="submit" value="Save for later" class="cr52" title="This does not start the review - You can start it at any time from your dashboard" />    
+            }
+        </p>
+    </fieldset>
+}
+<div class="context-nav">
+    @Html.ActionLink("Return to my dashboard", "Index")
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/editinplace")
+    <script>
+        $(function () {
+            // scroll down so that at least the first validation error will be visible
+            var firstError = $('.field-validation-error');
+            if (firstError.length > 0) {
+                // get the element's vertical offset and account for the height of the static header
+                var offset = firstError.offset().top - $('header').outerHeight(true /* include margin */);
+                scrollTo(0, offset);
+            }
+
+            // in-place edit
+            var replaceWith = $('<input name="temp" type="text" />'),
+                connectWith = $('.jq-name');
+            $('.cr26').inlineEdit(replaceWith, connectWith);
+
+            // remove category ajax requests
+            $('button[name=remove-category]').on('click', function () {
+                var $button = $(this),
+                    data = $button.data();
+                if (confirm("Do you really want to remove the category '" + data.categoryName + "' from the current review?")) {
+                    $.post('@Url.Action("RemoveCategory")', data)
+                        .success(function (response) {
+                            if (response.status == "error") {
+                                alert(response.message);
+                            } else if (response.status == "success") {
+                                $button.closest('tr').fadeOut();
+                            } else {
+                                alert("Unknown response.status: " + response.status);
+                            }
+                        })
+                        .error(function () { alert('An error occurred! Please reload the page and try again.'); });
+                }
+            });
+
+            // remove peer ajax requests
+            $('button[name=remove-peer]').on('click', function () {
+                var $button = $(this),
+                    data = $button.data();
+                if (confirm("Do you really want to remove the peer '" + data.peerUserName + " (" + data.peerEmail + ")' from the current review?")) {
+                    $.post('@Url.Action("RemovePeer")', data)
+                        .success(function (response) {
+                            if (response.status == "error") {
+                                alert(response.message);
+                            } else if (response.status == "success") {
+                                $button.closest('tr').fadeOut();
+                            } else {
+                                alert("Unknown response.status: " + response.status);
+                            }
+                        })
+                        .error(function () { alert('An error occurred! Please reload the page and try again.'); });
+                }
+            });
+        });
+    </script>
+}

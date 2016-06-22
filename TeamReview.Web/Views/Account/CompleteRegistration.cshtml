@@ -1,0 +1,50 @@
+﻿@using TeamReview.Core.Models
+@model RegisterModel
+
+@{
+    ViewBag.Title = "CompleteRegistration";
+}
+
+<h2>Complete Registration</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <div class="block-top">
+        <fieldset class="form-horizontal">
+            <legend>Please complete the registration for @Model.EmailAddress</legend>
+            @Html.HiddenFor(model => model.EmailAddress)
+            <div class="control-group">
+                @Html.LabelFor(model => model.UserName, new { @class = "control-label" })
+                <div class="controls">
+                    @Html.EditorFor(model => model.UserName)
+                    @Html.ValidationMessageFor(model => model.UserName)
+                </div>
+            </div>
+            <div class="control-group">
+                @Html.LabelFor(model => model.Password, new { @class = "control-label" })
+                <div class="controls">
+                    @Html.EditorFor(model => model.Password)
+                    @Html.ValidationMessageFor(model => model.Password)
+                </div>
+            </div>
+            <div class="control-group">
+                @Html.LabelFor(model => model.ConfirmPassword, new { @class = "control-label" })
+            
+                <div class="controls">
+                    @Html.EditorFor(model => model.ConfirmPassword)
+                    @Html.ValidationMessageFor(model => model.ConfirmPassword)
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <input class="rg29" type="submit" id="Register" value="Register" />
+                </div>
+            </div>
+        </fieldset>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

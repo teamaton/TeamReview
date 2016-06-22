@@ -1,0 +1,14 @@
+﻿@using TeamReview.Web.ViewModels
+@model PeerAddModel
+
+<tr>
+    <td>
+        @Html.TextBoxFor(model => model.UserName, new { placeholder = "Name or Username", autofocus = "" })
+        @Html.ValidationMessageFor(model => model.UserName)
+    </td>
+    <td>
+        @Html.TextBoxFor(model => model.EmailAddress, new { placeholder = "Email", type = "email" })
+        @Html.ValidationMessageFor(model => model.EmailAddress)
+    </td>
+    <td></td>
+</tr>

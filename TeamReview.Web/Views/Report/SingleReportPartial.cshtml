@@ -1,0 +1,12 @@
+﻿@using TeamReview.Web.ViewModels
+@model ReportViewModel
+
+<h3>@Model.Title</h3>
+<div class="block-top">
+    <p class="info">@Model.Description</p>
+    <div id="@Model.FieldId"
+            class="jqplot-report"
+            data-data-rows='@(Html.Raw(Model.DataRows))'
+            data-data-rows-labels='@(Html.Raw(Model.DataRowsLabels))'
+            data-xaxis-labels='@(Html.Raw(Model.XAxisLabels))'></div>
+</div>

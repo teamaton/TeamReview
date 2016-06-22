@@ -1,0 +1,46 @@
+@if (Request.IsAuthenticated) {
+    <ul class="nav1">
+        <li>@Html.ActionLink("My Dashboard", "Index", "Review")</li>
+        <li>
+            <a href="#">Help</a>
+            <ul class="subnav">                
+                <li><a href="@Url.Action("StackRanking", "Home")">Stack Ranking</a></li>
+                <li><a href="@Url.Action("PeerReviews", "Home")">Peer Reviews</a></li>
+                <li><a href="@Url.Action("PerformanceReview", "Home")">Performance Review</a></li>
+                <li><a href="@Url.Action("VisualizeData", "Home")">Visualize Data</a></li>
+            </ul>
+        </li>        
+    </ul>
+    <a class="hd15" href="@Url.Action("Create", "Review")"><span class="hd16">+</span> Create Review</a>
+    <ul class="mini-nav">        
+        <li>
+            <i class="hd14"></i><span class="hd17">Logged in as</span> @Html.ActionLink((string) ViewBag.UserName ?? "Unknown", "Manage", "Account", null, new { @class = "hd17", title = "Manage" })
+        </li>
+        <li>    
+            @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) {
+                @Html.AntiForgeryToken()
+                <a id="logoffLink" class="hd18" href="javascript:document.getElementById('logoutForm').submit()"><i class="hd19"></i>Log out</a>
+            }
+        </li>
+    </ul>
+}
+else {
+    <ul class="nav1">
+        <li><a href="@Url.Action("Index", "Home")">Home</a></li>
+        <li>
+            <a href="@Url.Action("Features", "Home")">Features</a>
+            <ul class="subnav">
+                <li><a href="@Url.Action("StackRanking", "Home")">Stack Ranking</a></li>
+                <li><a href="@Url.Action("PeerReviews", "Home")">Peer Reviews</a></li>
+                <li><a href="@Url.Action("PerformanceReview", "Home")">Performance Review</a></li>
+                <li><a href="@Url.Action("VisualizeData", "Home")">Visualize Data</a></li>
+            </ul>
+        </li>
+        <li><a href="@Url.Action("AboutUs", "Home")">About Us</a></li>
+    </ul>
+    <a class="hd15" href="@Url.Action("Login", "Account")"><i class="db12"></i>Create Review</a>
+    <ul class="mini-nav">
+        <li>@Html.ActionLink("Register", "Register", "Account", null, new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Log in", "Login", "Account", null, new { id = "loginLink" })</li>
+    </ul>
+}

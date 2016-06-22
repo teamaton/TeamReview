@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>@ViewBag.Title</title>
+        @Styles.Render("~/Content/css")
+        <link href='http://fonts.googleapis.com/css?family=Oleo+Script:400,700|Allan:400,700|Carter+One|Open+Sans' rel='stylesheet' type='text/css'>
+        <link rel="shortcut icon" href="/content/img/favicon.ico" type="image/x-icon" />
+        @Scripts.Render("~/bundles/modernizr")
+        @RenderSection("head", required: false)
+    </head>
+    <body>
+        <header class="header"> 
+            <div class="container">
+                <a class="logo" href="@Url.Action("Index", "Home")">
+                    <span class="lg11">Team</span>
+                    <span class="lg12">Review</span>
+                </a>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </header>
+        <div class="container well">
+            @RenderBody()
+        </div>
+
+        <!-- This version of jQuery Tools contains and uses jQuery 1.7.1 -->
+        <script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
+
+        @RenderSection("scripts", required: false)
+        <script type="text/javascript">
+            $(function () {
+                // static header with/without shadow
+                $(window).scroll(function (ev) {
+                    var docPosition = $(window).scrollTop();
+                    if (docPosition === 0) {
+                        $('.header').removeClass('shadow-bot');
+                    } else {
+                        $('.header').addClass('shadow-bot');
+                    };
+                });
+
+                // anzeige tooltips
+                $("[title]").tooltip({ position: "bottom center", effect: "fade", delay: 500 });
+
+            });
+        </script>
+    </body>
+</html>
+

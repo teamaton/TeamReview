@@ -1,0 +1,104 @@
+﻿@using TeamReview.Core.Models
+@using TeamReview.Web.ViewModels
+@model ReportOverviewViewModel
+
+@{
+    ViewBag.Title = Model.Title;
+}
+@section head {
+    @Styles.Render("~/Content/jqplotcss")
+}
+
+<h1>@Model.Title</h1>
+
+<ul class="tabs">
+    <li class="active"><a href="#me" data-toggle="tab">My Results</a></li>
+    <li><a href="#peers" data-toggle="tab">My Peers</a></li>
+    <li><a href="#team" data-toggle="tab">The Team</a></li>
+</ul>
+
+<div class="tab-content">
+    @* My own reports *@
+    <div class="tab-pane active" id="me">
+        @{
+            Html.RenderAction("OwnStackRating", "Report", new {id = Model.ReviewId, peerId = @Model.LoggedInUserId});
+        } 
+        @using (Ajax.BeginForm("OwnReport", new AjaxOptions {OnComplete = "renderReportGraphOnActiveTab", UpdateTargetId = "own-result", InsertionMode = InsertionMode.InsertBefore})) {
+            @Html.Hidden("id", Model.ReviewId)
+            <h2>Show Custom Reports</h2>
+            <p class="block-top rsl34">
+            @Html.DropDownListFor(m => m.CategoryId, new SelectList(Model.Categories, "Id", "Name"), "(Select a category...)",
+                                       new { @class = "rsl35", onchange = "$(this.form).submit();" })
+            @Html.ValidationMessageFor(m => m.CategoryId)
+            <span>Select a category to <strong>show your own rating</strong> compared to your <strong>peer's rating of you</strong>.</span>
+            </p>
+        }
+        <div id="own-result"></div>
+    </div>
+    
+    @* Peer reports *@
+    <div class="tab-pane " id="peers">
+        @using (Ajax.BeginForm("PeerReport", new AjaxOptions {OnComplete = "renderReportGraphOnActiveTab", UpdateTargetId = "peer-result", InsertionMode = InsertionMode.InsertBefore})) {
+            @Html.Hidden("id", Model.ReviewId)
+            <h2 class="rsl42">Show Custom Peer Reports</h2>
+            <div class="block-top rsl34">
+                <p>Select a <strong>category</strong> and one or more <strong>peers</strong> to compare results.</p>
+                @Html.DropDownListFor(m => m.CategoryId, new SelectList(Model.Categories, "Id", "Name"), new { @class = "rsl45"})
+                @Html.ValidationMessageFor(m => m.CategoryId)
+                <ul class="rsl46">
+                    @foreach (var peer in Model.Peers) {
+                        <li>
+                            <input id="peer@(peer.Id)" type="checkbox" name="SelectedPeerIds" value="@peer.Id" />
+                            <label for="peer@(peer.Id)">@peer.UserName</label>
+                        </li>
+                    }
+                </ul>
+
+                @Html.ValidationMessageFor(m => m.SelectedPeerIds)
+                <input class="rsl48" type="submit" value="Show report" />
+            </div>
+        }
+        <div id="peer-result"></div>
+    </div>
+    
+    @* Team reports *@
+    <div class="tab-pane" id="team">
+        @{
+            Html.RenderAction("TeamStackRating", "Report", new {id = Model.ReviewId});
+        }
+        @using (Ajax.BeginForm("TeamReport", new AjaxOptions {OnComplete = "renderReportGraphOnActiveTab", UpdateTargetId = "team-result", InsertionMode = InsertionMode.InsertBefore})) {
+            <h2>Show Custom Reports</h2>
+            <p class="block-top rsl34">
+                @Html.Hidden("id", Model.ReviewId)
+                @Html.DropDownListFor(m => m.CategoryId, new SelectList(Model.Categories, "Id", "Name"), "(Select a category...)",
+                                       new { @class = "rsl35", onchange = "$(this.form).submit();" })
+                @Html.ValidationMessageFor(m => m.CategoryId)
+                <span>Select a category to <strong>show how your team is doing</strong> in that category.</span>
+            </p>
+        }
+        <div id="team-result"></div>
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqplot")
+    <script type="text/javascript">
+        // render ajax-loaded reports
+        function renderReportGraphOnActiveTab() {
+            $('.tab-pane.active .jqplot-report:empty').reports();        
+        }
+
+        $(function () {
+            // render pre-loaded report on first tab
+            renderReportGraphOnActiveTab();
+
+            // render pre-loaded report on other tabs
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
+                renderReportGraphOnActiveTab();     
+            });
+        });
+    </script>
+}

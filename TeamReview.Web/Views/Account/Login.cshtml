@@ -1,0 +1,50 @@
+﻿@using TeamReview.Core.Models
+@model LoginModel
+
+@{
+    ViewBag.Title = "Log in";
+}
+
+
+<h1>@ViewBag.Title</h1>
+<h2>Login into an existing TeamReview account</h2>
+
+<section id="loginForm">    
+    @using (Html.BeginForm(new { ReturnUrl = ViewBag.ReturnUrl })) {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        <div class="block-top">
+            <fieldset class="form-horizontal">
+                <legend>Welcome Back</legend>
+                <div class="control-group">
+                    @Html.LabelFor(m => m.EmailAddress, new { @class = "control-label" })
+                    <div class="controls">
+                        @Html.TextBoxFor(m => m.EmailAddress)
+                        @Html.ValidationMessageFor(m => m.EmailAddress)
+                    </div>
+                </div>
+                <div class="control-group">
+                    @Html.LabelFor(m => m.Password, new { @class = "control-label" })
+                    <div class="controls">
+                        @Html.PasswordFor(m => m.Password)
+                        @Html.ValidationMessageFor(m => m.Password)
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <input type="submit" id="Login" value="Log in" class="lg31" />
+                        <p class="lg32">
+                            Or @Html.ActionLink("Register", "Register") if you don't have an account.
+                        </p>
+                    </div>
+                </div>
+            </fieldset>
+
+        </div>
+    }
+</section>
+
+<section class="social lg41" id="socialLoginForm">
+    <h3>Or use one of the following services to log in:</h3>
+    @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
+</section>

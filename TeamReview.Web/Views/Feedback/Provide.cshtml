@@ -1,0 +1,88 @@
+﻿@using TeamReview.Core.ViewModels
+@model FeedbackViewModel
+
+@{
+    ViewBag.Title = "Provide review";
+}
+
+@if (TempData["Message"] != null) {
+    <p>@TempData["Message"]</p>
+}
+
+<h1>Provide review "@Model.ReviewName"</h1>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <div class="block-top">
+            <p class="info">Please evaluate your peers and yourself according to the following categories.</p>
+            <p class="info">1 beeing the lowest, 10 being the highest rating.</p>
+        </div>
+        @Html.HiddenFor(x => Model.ReviewId)
+        @Html.HiddenFor(model => Model.ReviewName)
+        @if (Model.CategoriesWithPeersAndRatings.Count == 0)
+        {
+            <div class="block-top">
+                <p class="info">No categories have been created for this review, yet.</p>
+                <p class="info">To learn more about reviews and categories, check out @Html.ActionLink("the peer review info page", "PeerReviews", "Home").</p>
+                <p class="info">To create some categories for your review now, go ahead and @Html.ActionLink("edit your review", "Edit", new { controller = "Review", id = Model.ReviewId }).</p>
+            </div>
+        }
+        @for (var i = 0; i < Model.CategoriesWithPeersAndRatings.Count; i++)
+        {
+            var category = "category_" + Model.CategoriesWithPeersAndRatings[i].Category.Id;
+            <div id="@category">
+                @Html.HiddenFor(model => Model.CategoriesWithPeersAndRatings[i].Category.Id)
+                @Html.HiddenFor(model => Model.CategoriesWithPeersAndRatings[i].Category.Name)
+                @Html.HiddenFor(model => Model.CategoriesWithPeersAndRatings[i].Category.Description)
+
+                <h2>@Model.CategoriesWithPeersAndRatings[i].Category.Name</h2>
+                <div class="rt32 block-top" title="category description"><blockquote>@Model.CategoriesWithPeersAndRatings[i].Category.Description</blockquote></div>
+
+                <table class="table1">
+                    <colgroup>
+                        <col width="30%" />
+                        <col width="70%" />
+                    </colgroup>
+
+                    @for (var j = 0; j < Model.CategoriesWithPeersAndRatings[i].PeersWithRatings.Count; j++)
+                    {
+                        var peer = category + "_peer_" + Model.CategoriesWithPeersAndRatings[i].PeersWithRatings[j].Peer.Id;
+                        <tr id="@peer">
+
+                            <th>@Model.CategoriesWithPeersAndRatings[i].PeersWithRatings[j].Peer.UserName</th>
+                            @Html.HiddenFor(model => Model.CategoriesWithPeersAndRatings[i].PeersWithRatings[j].Peer.Id)
+                            @Html.HiddenFor(model => Model.CategoriesWithPeersAndRatings[i].PeersWithRatings[j].Peer.UserName)
+                            <td>
+                                @for (var k = 10; k > 0; k--)
+                                {
+                                    var radioButtonId = "CategoriesWithPeersAndRatings_" + i + "__PeersWithRatings_" + j + "__Rating_" + k;
+                                    @Html.RadioButtonFor(x => Model.CategoriesWithPeersAndRatings[i].PeersWithRatings[j].Rating, k, new { @class = "rt0", id = radioButtonId })
+                                    <label class="rt1" for="@radioButtonId">@k</label>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
+
+        <p class="rt81">
+            <input id="Save" class="pr41" type="submit" value="Save and Submit your Review" />
+            @Html.ActionLink("Cancel and Back to My Dashboard", "Index", "Review")
+        </p>
+    </fieldset>
+}
+@section scripts {
+    <script>
+        $(function () {
+            $("form input[type='radio']:checked").addClass("rt-selected");
+
+            $('.rt1').click(function () {
+                $(this).siblings().removeClass('rt-selected');
+                $(this).addClass("rt-selected");
+            });
+        });
+    </script>
+}
