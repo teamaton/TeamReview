@@ -21,21 +21,19 @@ We use sass for css compiling, bootstrap for css and javascript components, jque
 
 ## Get Started
 
-1. Adjust settings in Web.config for smtp-server:
-
+### Adjust settings in Web.config for smtp-server:
+```
     <mailSettings>
      <smtp>
        <network defaultCredentials="false" host="my-mail.my-server.com" password="password" port="465" enableSsl="true" userName="me@me.com" />
      </smtp>
    </mailSettings>
-
-
-2. Set default email for automatic messages and as sender:
+```
+### Set default email for automatic messages and as sender:
 
 DefaultContactEmail in EmailService (TeamReview.Core/Services/EmailService.cs)
 
-
-3. to run the specs, fill in email credentials:
+### To run the specs, fill in email credentials:
 
 Given I own a google account (in TeamReview.Specs/Steps.cs)
 
