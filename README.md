@@ -6,6 +6,19 @@ Check out a live, hosted version of Team Review at <a href="http://teamreview.ne
 
 The project is maintained by a <a href="http://teamaton.com">teamaton</a>.
 
+## Framework 
+
+Team Review is built with **<a href="http://www.asp.net/mvc">asp.net mvc</a>** and the **<a href="https://msdn.microsoft.com/en-us/data/ef.aspx">entity framework</a>**.
+
+Components used:
+
+- <a href="http://sass-lang.com/">sass</a> for css compiling
+- bootstrap
+- jquery
+- html5
+
+We use sass for css compiling, bootstrap for css and javascript components, jquery.
+
 ## Copyright & License
 
 Copyright (c) 2013-2016 teamaton UG - Released under the [MIT license](LICENSE).
