@@ -95,6 +95,8 @@
     <Compile Include="Services\IReportService.cs" />
     <Compile Include="Services\IReviewEventHandler.cs" />
     <Compile Include="Services\IReviewService.cs" />
+    <Compile Include="Services\ISmtpClient.cs" />
+    <Compile Include="Services\LiteSmtpClient.cs" />
     <Compile Include="Services\ReportService.cs" />
     <Compile Include="Services\ReviewService.cs" />
     <Compile Include="ViewModels\CategoryWithPeersAndRatings.cs" />

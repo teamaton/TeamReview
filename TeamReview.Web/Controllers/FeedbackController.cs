@@ -15,11 +15,13 @@ namespace TeamReview.Web.Controllers {
 	public class FeedbackController : Controller {
 		private readonly IDatabaseContext _db;
 		private readonly IFeedbackService _feedbackService;
+	    private readonly ISmtpClient _smtpClient;
 
-		public FeedbackController(IDatabaseContext dbContext, IFeedbackService feedbackService) {
+	    public FeedbackController(IDatabaseContext dbContext, IFeedbackService feedbackService, ISmtpClient smtpClient) {
 			_db = dbContext;
 			_feedbackService = feedbackService;
-		}
+	        _smtpClient = smtpClient;
+	    }
 
 		[HttpGet]
 		[DenyDuplicateFeedback]
@@ -69,7 +71,6 @@ namespace TeamReview.Web.Controllers {
 				return;
 			}
 
-			var smtpClient = new SmtpClient();
 			foreach (var peer in review.Peers) {
 				var message = new MailMessage(EmailService.DefaultContactEmail, peer.EmailAddress)
 					              {
@@ -77,7 +78,7 @@ namespace TeamReview.Web.Controllers {
 						              Body = GetMailBodyForFinishedReview(peer.UserName, review.Id, review.Name)
 					              };
 
-				smtpClient.Send(message);
+				_smtpClient.Create().Send(message);
 			}
 		}
 

@@ -2,6 +2,7 @@
 using Autofac;
 using Autofac.Integration.Mvc;
 using TeamReview.Core.DataAccess;
+using TeamReview.Core.Services;
 
 namespace TeamReview.Web {
 	public static class AutofacConfig {
@@ -21,6 +22,7 @@ namespace TeamReview.Web {
 
 		private static void RegisterCustomDependencies(ContainerBuilder builder) {
 			builder.RegisterAssemblyTypes(typeof (IDatabaseContext).Assembly).AsImplementedInterfaces();
+		    builder.RegisterType<LiteSmtpClient>().As<ISmtpClient>();
 		}
 
 		private static void BuildAndRegisterAutofacContainer(ContainerBuilder builder) {

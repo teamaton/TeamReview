@@ -6,6 +6,13 @@ using TeamReview.Web.ViewModels;
 
 namespace TeamReview.Web.Controllers {
 	public class HomeController : Controller {
+        private readonly ISmtpClient _smtpClient;
+
+        public HomeController(ISmtpClient smtpClient)
+	    {
+	        _smtpClient = smtpClient;
+	    }
+
 	    //
 		// GET: /Home/
 
@@ -57,7 +64,7 @@ namespace TeamReview.Web.Controllers {
 			var displayName = userdata.GetDisplayName();
 			message.ReplyToList.Add(new MailAddress(userdata.EmailAddress, displayName));
 
-			new SmtpClient().Send(message);
+			_smtpClient.Create().Send(message);
 
 			TempData["MessageSent"] = "true";
 			return RedirectToAction("Contact");

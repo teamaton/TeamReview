@@ -3,7 +3,7 @@ using TeamReview.Core.Models;
 
 namespace TeamReview.Core.DataAccess {
 	public class DatabaseContext : DbContext, IDatabaseContext {
-		public DatabaseContext(string connectionString = "name=DefaultConnection")
+        public DatabaseContext(string connectionString = "name=DefaultConnection")
 			: base(connectionString) {
 		}
 

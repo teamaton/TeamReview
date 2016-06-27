@@ -16,8 +16,15 @@ namespace TeamReview.Web.Controllers {
 	[Authorize]
 	[InitializeSimpleMembership]
 	public class AccountController : Controller {
-		private const string PasswordPlaceholder = "passwordPlaceholder";
-		//
+	    private readonly ISmtpClient _smpClient;
+	    private const string PasswordPlaceholder = "passwordPlaceholder";
+
+	    public AccountController(ISmtpClient smpClient)
+	    {
+	        _smpClient = smpClient;
+	    }
+
+	    //
 		// GET: /Account/Login
 
 		[AllowAnonymous]
@@ -85,7 +92,7 @@ namespace TeamReview.Web.Controllers {
 							              Subject = "Confirm Registration",
 							              Body = GetMailBody(confirmationToken, emailAddress)
 						              };
-					new SmtpClient().Send(message);
+                    _smpClient.Create().Send(message);
 					TempData["Message"] = "An email has been send to " + emailAddress +
 					                      ". Please check your inbox for further instructions.";
 					ModelState.Clear();
