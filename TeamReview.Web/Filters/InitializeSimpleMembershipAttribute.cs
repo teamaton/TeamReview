@@ -35,7 +35,9 @@ namespace TeamReview.Web.Filters {
                     WebSecurity.InitializeDatabaseConnection("SQLSERVER_CONNECTION_STRING", "UserProfiles", "Id", "EmailAddress",
 					                                         autoCreateTables: true);
 				}
-				catch (Exception ex) {
+				catch (Exception ex)
+				{
+				    throw;
 					throw new InvalidOperationException(
 						"The ASP.NET Simple Membership database could not be initialized. For more information, please see http://go.microsoft.com/fwlink/?LinkId=256588",
 						ex);
