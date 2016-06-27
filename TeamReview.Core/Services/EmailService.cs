@@ -2,22 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
+using System.Security.Cryptography.X509Certificates;
 using TeamReview.Core.DataAccess;
 using TeamReview.Core.Models;
 
 namespace TeamReview.Core.Services {
 	public class EmailService : IEmailService {
 		private readonly IDatabaseContext _databaseContext;
+	    private readonly ISmtpClient _smptClient;
 
-        // todo: move to web.config and use the email of your admin
+	    // todo: move to web.config and use the email of your admin
         // default email as sender of automatic emails and for receiving automatic messages
-        public static string DefaultContactEmail = "admin@my-domain.com";
+        public static string DefaultContactEmail = "byron@acklenavenue.com";
 
-		public EmailService(IDatabaseContext databaseContext) {
-			_databaseContext = databaseContext;
+		public EmailService(IDatabaseContext databaseContext, ISmtpClient smptClient)
+		{
+		    _databaseContext = databaseContext;
+		    _smptClient = smptClient;
 		}
 
-		public void SendInvitationEmailsForReview(int reviewConfigurationId) {
+	    public void SendInvitationEmailsForReview(int reviewConfigurationId) {
 			var configuration = _databaseContext.ReviewConfigurations.Single(review => review.Id == reviewConfigurationId);
 			SendMailToPeers(configuration.Peers, configuration.Id, configuration.Initiator);
 		}
