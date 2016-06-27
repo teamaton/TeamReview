@@ -1,4 +1,5 @@
-﻿@{
+﻿@model HandleErrorInfo
+@{
     Layout = null;
 }
 
@@ -9,8 +10,15 @@
         <title>Error</title>
     </head>
     <body>
-        <h2>
-            Sorry, an error occurred while processing your request.
-        </h2>
+    <h2>
+        Sorry, an error occurred while processing your request.
+    </h2>
+    <p>@Model.Exception.Message</p>
+    <p>@Model.Exception.StackTrace</p>
+    @if (@Model.Exception.InnerException != null)
+    {
+        <p>@Model.Exception.InnerException.Message</p>
+        <p>@Model.Exception.InnerException.StackTrace</p>
+    }
     </body>
 </html>
